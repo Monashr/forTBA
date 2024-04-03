@@ -1,2 +1,7 @@
-hahahehe 1
-makemake make 5
+state
+p1 StartingAccepting
+p2 NonAccepting
+p3 Accepting
+link
+p1 p2 0
+p2 p3 1

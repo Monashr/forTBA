@@ -1,7 +1,13 @@
 public class Main {
+
+    public void mainMenu() {
+        System.out.println("Load text");
+    }
+
     public static void main(String[] args) {
 
-        //regex no5 sudah jadi
+        TextReader reader = new TextReader("example.txt");
+        reader.readFile();
 
     }
 }
