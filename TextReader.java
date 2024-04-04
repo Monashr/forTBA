@@ -9,12 +9,14 @@ import java.util.Map;
 public class TextReader {
     private String fileName;
     private String Regex;
+    private String check;
     private List<String> links;
     private Map<String, String> stateMap;
 
     public TextReader(String fileName) {
         this.fileName = fileName;
         this.Regex = "null";
+        this.check = "null";
         this.links = new ArrayList<>();
         this.stateMap = new HashMap<>();
     }
@@ -22,34 +24,39 @@ public class TextReader {
     public void readFile() {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
-            boolean readingStates = true;
-            boolean isItRegex = false;
+            String mode = null;
             while ((line = br.readLine()) != null) {
 
-                if(line.toLowerCase().equals("regex")) {
-                    isItRegex = true;
+                if(
+                    line.equalsIgnoreCase("regex") || 
+                    line.equalsIgnoreCase("state") || 
+                    line.equalsIgnoreCase("links") || 
+                    line.equalsIgnoreCase("check") ) {
+
+                    mode = line;
                     continue;
                 }
 
-                if(isItRegex) {
+                if(mode.equalsIgnoreCase("regex")) {
                     this.Regex = line;
-                    break;
-                }
-
-                if (line.toLowerCase().equals("link")) {
-                    readingStates = false;
                     continue;
                 }
 
-                if (readingStates) {
+                if (mode.equalsIgnoreCase("state")) {
                     String[] parts = line.split(" ");
                     if (parts.length >= 2) {
                         this.stateMap.put(parts[0], parts[1]);
                     }
+                    continue;
                 } 
-                
-                else {
+
+                if(mode.equalsIgnoreCase("links")) {
                     this.links.add(line);
+                    continue;
+                }
+
+                if(mode.equalsIgnoreCase("check")) {
+                    this.check = line;
                 }
 
             }
@@ -69,4 +76,21 @@ public class TextReader {
     public Map<String, String> getStateMap() {
         return this.stateMap;
     }
+
+    public int getStateCount() {
+        return this.stateMap.size();
+    }
+
+    public boolean hasCheck() {
+        if(this.check.equals("null")) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public String getCheck() {
+        return this.check;
+    }
+
 }

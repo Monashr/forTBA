@@ -1,2 +1,4 @@
-hahahehe 1
-makemake make 5
+regex
+1+00
+check
+0101010
