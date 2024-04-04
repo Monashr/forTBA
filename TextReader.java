@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class TextReader {
     private String fileName;
@@ -45,7 +47,7 @@ public class TextReader {
                 if (mode.equalsIgnoreCase("state")) {
                     String[] parts = line.split(" ");
                     if (parts.length >= 2) {
-                        this.stateMap.put(parts[0], parts[1]);
+                        this.stateMap.put(parts[0], parts[1].toLowerCase());
                     }
                     continue;
                 } 
@@ -67,6 +69,10 @@ public class TextReader {
 
     public List<String> getLinks() {
         return this.links;
+    }
+
+    public int getLinksSize() {
+        return this.links.size();
     }
 
     public String getRegex() {
@@ -91,6 +97,10 @@ public class TextReader {
 
     public String getCheck() {
         return this.check;
+    }
+
+    public Set<Entry<String, String>> getEntrySet() {
+        return this.stateMap.entrySet();
     }
 
 }
