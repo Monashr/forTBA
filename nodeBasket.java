@@ -35,7 +35,7 @@ public class nodeBasket {
 
     private Node searchNode(String name) {
         for(Node n : basket) {
-            if(n.name == name) {
+            if(n.name.equals(name)) {
                 return n;
             }
         }
@@ -60,11 +60,8 @@ public class nodeBasket {
     }
 
     public void cari(String input) {
-
         this.traveler = searchNode();
-
         maju(input);
-
         return;
     }
 
@@ -97,12 +94,12 @@ public class nodeBasket {
                 if(input.charAt(0) == entry.getValue().getTransitionValue()) {
                     jalanPossible.add(entry.getValue().getTarget());
                     this.traveler = entry.getValue().getTarget();
-                    System.out.println(this.traveler.name);
+                    //System.out.println(this.traveler.name);
                     maju(input.substring(1));
                 } else if ('e' == entry.getValue().getTransitionValue()) {
                     jalanPossible.add(entry.getValue().getTarget());
                     this.traveler = entry.getValue().getTarget();
-                    System.out.println(this.traveler.name);
+                    //System.out.println(this.traveler.name);
                     maju(input);
                 }
             }
