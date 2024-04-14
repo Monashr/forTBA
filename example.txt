@@ -1,11 +1,14 @@
 state
-p1 StartingAccepting
-p2 NonAccepting
-p3 Accepting
+A Starting
+B NonAccepting
+C NonAccepting
+D Accepting
 links
-p1 p2 1
-p2 p3 0
-p3 p1 0
-p1 p3 e
+A B 0
+B B 1
+B C e
+C C 0
+C D 1
+DFAconvert
 check
-00
+011

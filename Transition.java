@@ -17,5 +17,9 @@ public class Transition {
         return this.target;
     }
 
+    public String getTargetName() {
+        return this.target.name;
+    }
+
 
 }

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -37,6 +38,7 @@ public class Main {
 
     public static void loader(String fileName, Scanner scanner) {
         TextReader reader = new TextReader(fileName);
+        List<nodeBasket> listOfBasket = new ArrayList<nodeBasket>();
         reader.readFile();
 
         if(reader.getRegex() != "null") {
@@ -48,31 +50,39 @@ public class Main {
                 return;
             }
 
-            System.out.print("Enter String to Check : ");
-            String input = scanner.nextLine();
-            regexChecker(reader, ex, input);
-
-        } else if(reader.getStateCount() != 0) {
-            System.out.println("Finite Automata Detected");
-            nodeBasket basket = new nodeBasket();
+        } else if(reader.getStateCounts() != -1) {
+            System.out.println(reader.getStateCounts() + " Finite Automata Detected");
             
-            for(Map.Entry<String, String> entry : reader.getEntrySet()) {
-                basket.nodeInsert(entry.getKey(), statePicker(entry.getValue()));
+            for(int i = 0 ; i < reader.getStateCounts() ; i++) {
+                listOfBasket.add(new nodeBasket());
             }
-            for(int i = 0 ; i < reader.getLinksSize() ; i++) {
-                List<String> linkList = reader.getLinks();
-                String input[] = linkList.get(i).split(" ", 3);
-                basket.linkNode(input[0], input[1], input[2].charAt(0));
-            }
+            
+            for(int k = 0 ; k < reader.getStateCounts() ; k++) {
+                for(Map.Entry<String, String> entry : reader.getEntrySet(k)) {
+                    listOfBasket.get(k).nodeInsert(entry.getKey(), statePicker(entry.getValue()));
+                }
 
-            if(reader.hasCheck()) {
-                basket.cari(reader.getCheck());
-                return;
-            }
+                for(int j = 0; j < reader.getStateCounts() ; j++) {
+                    for(int i = 0 ; i < reader.getLinksSize(j) ; i++) {
+                        List<String> linkList = reader.getLinks(k);
+                        String input[] = linkList.get(i).split(" ", 3);
+                        listOfBasket.get(k).linkNode(input[0], input[1], input[2].charAt(0));
+                    }
+                }
+    
+                if(reader.isDFAconvert()) {
+                    System.out.println("Converting...");
+                    listOfBasket.get(k).toNFA();
+                }
 
-            System.out.print("Enter String to Check : ");
-            String input = scanner.nextLine();
-            basket.cari(input);
+                if(reader.hasCheck()) {
+                    System.out.println("Checking Input...");
+                    listOfBasket.get(k).transverse(reader.getCheck());
+                    return;
+                } 
+                
+
+            }
         }
     }
 

@@ -12,15 +12,17 @@ public class TextReader {
     private String fileName;
     private String Regex;
     private String check;
-    private List<String> links;
-    private Map<String, String> stateMap;
+    private boolean DFAconvert;
+    private List<List<String>> links;
+    private List<Map<String, String>> stateMap;
 
     public TextReader(String fileName) {
         this.fileName = fileName;
         this.Regex = "null";
         this.check = "null";
+        this.DFAconvert = false;
         this.links = new ArrayList<>();
-        this.stateMap = new HashMap<>();
+        this.stateMap = new ArrayList<>();
     }
 
     public void readFile() {
@@ -33,9 +35,16 @@ public class TextReader {
                     line.equalsIgnoreCase("regex") || 
                     line.equalsIgnoreCase("state") || 
                     line.equalsIgnoreCase("links") || 
-                    line.equalsIgnoreCase("check") ) {
+                    line.equalsIgnoreCase("check") ||
+                    line.equalsIgnoreCase("dfaconvert")) {
 
                     mode = line;
+                    if(mode.equalsIgnoreCase("state")) {
+                        this.stateMap.add(new HashMap<>());
+                        this.links.add(new ArrayList<>());
+                    } else if(mode.equalsIgnoreCase("dfaconvert")) {
+                        this.DFAconvert = true;
+                    }
                     continue;
                 }
 
@@ -44,16 +53,16 @@ public class TextReader {
                     continue;
                 }
 
-                if (mode.equalsIgnoreCase("state")) {
+                if (mode.equalsIgnoreCase("state")) { 
                     String[] parts = line.split(" ");
                     if (parts.length >= 2) {
-                        this.stateMap.put(parts[0], parts[1].toLowerCase());
+                        this.stateMap.get(getStateCounts() - 1).put(parts[0], parts[1].toLowerCase());
                     }
                     continue;
                 } 
 
                 if(mode.equalsIgnoreCase("links")) {
-                    this.links.add(line);
+                    this.links.get(getStateCounts() - 1).add(line);
                     continue;
                 }
 
@@ -67,23 +76,23 @@ public class TextReader {
         }
     }
 
-    public List<String> getLinks() {
-        return this.links;
+    public List<String> getLinks(int num) {
+        return this.links.get(num);
     }
 
-    public int getLinksSize() {
-        return this.links.size();
+    public int getLinksSize(int i) {
+        return this.links.get(i).size();
     }
 
     public String getRegex() {
         return this.Regex;
     }
 
-    public Map<String, String> getStateMap() {
-        return this.stateMap;
+    public Map<String, String> getStateMap(int num) {
+        return this.stateMap.get(num);
     }
 
-    public int getStateCount() {
+    public int getStateCounts() {
         return this.stateMap.size();
     }
 
@@ -99,8 +108,12 @@ public class TextReader {
         return this.check;
     }
 
-    public Set<Entry<String, String>> getEntrySet() {
-        return this.stateMap.entrySet();
+    public Set<Entry<String, String>> getEntrySet(int num) {
+        return this.stateMap.get(num).entrySet();
+    }
+
+    public boolean isDFAconvert() {
+        return this.DFAconvert;
     }
 
 }

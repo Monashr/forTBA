@@ -16,4 +16,22 @@ public class Node {
         this.transition.putIfAbsent(this.transition.size(), value);
     }
 
+    public void ToAccepting() {
+        if(this.state.equals(State.S)) {
+            this.state = State.AS;
+            return;
+        }
+
+        this.state = State.A;
+    }
+
+    public void replaceTransition(HashMap<Integer, Transition> newTransition) {
+        this.transition.clear();
+        this.transition.putAll(newTransition);
+    }
+
+    public void clearTransition() {
+        this.transition.clear();
+    }
+
 }

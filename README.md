@@ -8,4 +8,4 @@
 
 To-Do
 Harun : Nomor 3 Regex
-Nassser : Nomor 1 OTW
+Nassser : Nomor 1
