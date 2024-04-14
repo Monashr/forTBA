@@ -61,7 +61,7 @@ public class nodeBasket {
 
     public void transverse(String input) {
         this.traveler = searchNode();
-        walk(input);
+        walk(input, this.traveler.name);
         return;
     }
 
@@ -75,16 +75,15 @@ public class nodeBasket {
         return false;
     }
 
-    private void walk(String input) {
+    private void walk(String input, String output) {
 
         boolean hasil;
 
         if(input.length() == 0) {
             hasil = check(traveler);
-            System.out.println(hasil);
-            if(hasil) {
-                return;
-            }
+            System.out.println(output + " " + hasil);
+                
+            
 
         } else {
 
@@ -94,11 +93,11 @@ public class nodeBasket {
                 if(input.charAt(0) == entry.getValue().getTransitionValue()) {
                     jalanPossible.add(entry.getValue().getTarget());
                     this.traveler = entry.getValue().getTarget();
-                    walk(input.substring(1));
+                    walk(input.substring(1), output + " " + entry.getValue().getTargetName());
                 } else if ('e' == entry.getValue().getTransitionValue()) {
                     jalanPossible.add(entry.getValue().getTarget());
                     this.traveler = entry.getValue().getTarget();
-                    walk(input);
+                    walk(input, output + " " + entry.getValue().getTargetName());
                 }
             }
         }
@@ -163,9 +162,6 @@ public class nodeBasket {
                 eWalks((i * 2) + j, 0);
                 cusWalk((i * 2) + j, j);
                 eWalks((i * 2) + j, 1);
-                
-                //this.NFAlist.get((i * 2) + j).add(this.traveler.name);
-                //this.traveler = this.basket.get(i);
             }
         }
 

@@ -76,7 +76,7 @@ public class Main {
                 }
 
                 if(reader.hasCheck()) {
-                    System.out.println("Checking Input...");
+                    System.out.println("Checking Input " + reader.getCheck());
                     listOfBasket.get(k).transverse(reader.getCheck());
                     return;
                 } 
