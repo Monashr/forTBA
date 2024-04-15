@@ -1,12 +1,9 @@
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Map.Entry;
 
 public class nodeBasket {
 
-    ArrayList<Node> basket;
-    ArrayList<HashSet<Node>> NFAlist;
-    HashSet<Node> acceptingForNFA;
+    protected ArrayList<Node> basket;
     Node traveler;
 
     public nodeBasket() {
@@ -42,7 +39,7 @@ public class nodeBasket {
         return null;
     }
 
-    private Node searchNode() {
+    protected Node searchNode() {
         for(Node n : basket) {
             if(n.state == State.S || n.state == State.AS) {
                 return n;
@@ -105,45 +102,7 @@ public class nodeBasket {
         return;
     }
 
-    private void eWalks(int row, int order) {
-        HashSet<Node> temp = new HashSet<Node>();
-        temp.addAll(this.NFAlist.get(row));
-
-        for(Node iterator : this.NFAlist.get(row)) {
-            eWalk(iterator, iterator, row, temp, order);
-        }
-
-        this.NFAlist.get(row).clear();
-        this.NFAlist.get(row).addAll(temp);
-    }
-
-    private void eWalk(Node node, Node init, int row, HashSet<Node> temp, int order) {
-        for(Entry<Integer, Transition> entry : node.transition.entrySet()) {
-            if('e' == entry.getValue().getTransitionValue()) {
-                temp.add(entry.getValue().getTarget());
-                if(( entry.getValue().getTarget().state == State.A ||
-                     entry.getValue().getTarget().state == State.AS) && order == 0) {
-                    this.acceptingForNFA.add(init);
-                }
-                eWalk(entry.getValue().getTarget(), init, row, temp, order);
-            } 
-        }
-    }
-
-    private void cusWalk(int row, int num) {
-        HashSet<Node> temp = new HashSet<Node>();
-        for(Node iterator : this.NFAlist.get(row)) {
-            for(Entry<Integer, Transition> entry : iterator.transition.entrySet()) {
-                if(numToChar(num) == entry.getValue().getTransitionValue()) {
-                    temp.add(entry.getValue().getTarget());
-                }
-            }
-        }
-        this.NFAlist.get(row).clear();
-        this.NFAlist.get(row).addAll(temp);
-    }
-
-    private char numToChar(int num) {
+    protected char numToChar(int num) {
         if(num > 0) {
             return '1';
         }
@@ -151,38 +110,37 @@ public class nodeBasket {
     }
 
     public void toNFA() {
-        this.NFAlist = new ArrayList<HashSet<Node>>(); //misalkan ada 4 state
-        this.acceptingForNFA = new HashSet<Node>();
-
-        for(int i = 0 ; i < this.basket.size() ; i++) { //4 state
-            for(int j = 0 ; j < 2 ; j++) { // 4 state ada 2 kolom 1 dan 0 p10, p11, p20, p21, p30, p31, p40, p41
-                
-                this.NFAlist.add(new HashSet<Node>());
-                this.NFAlist.get((i * 2) + j).add(this.basket.get(i));
-                eWalks((i * 2) + j, 0);
-                cusWalk((i * 2) + j, j);
-                eWalks((i * 2) + j, 1);
-            }
-        }
-
-        ENFAtoNFALinker();
+        ENFAtoNFA nfaManager = new ENFAtoNFA();
+        nfaManager.toNFA(this.basket);
     }
 
-    private void makeTransition(int num) { //
-        this.basket.get(num).clearTransition();
-        for(int k = 0 ; k < 2 ; k++) {
-            for(Node iterator : this.NFAlist.get((num * 2) + k)) {
-                nodeLinker(this.basket.get(num), iterator, numToChar(k));
-            }
+    public void toDFA() {
+        NFAtoDFA DFAmanager = new NFAtoDFA(this.basket);
+        this.basket = DFAmanager.engine(searchNode());
+    }
+
+    private String statePrinter(Node node) {
+        if(node.state == State.A) {
+            return "Accepting";
+        } else if(node.state == State.AS) {
+            return "StartingAccepting";
+        } else if(node.state == State.S) {
+            return "Starting";
+        } else {
+            return "NonAccepting";
         }
     }
 
-    private void ENFAtoNFALinker() {
-        for(int i = 0 ; i < this.basket.size() ; i++) {
-            if(this.acceptingForNFA.contains(this.basket.get(i))) {
-                this.basket.get(i).ToAccepting();
+    public void print() {
+        System.out.println("state");
+        for(Node node : this.basket) {
+            System.out.println(node.name + " " + statePrinter(node));
+        }
+        System.out.println("links");
+        for(Node node : this.basket) {
+            for(Entry<Integer, Transition> entry : node.transition.entrySet()) {
+                System.out.println(node.name + " " + entry.getValue().getTargetName() + " " + entry.getValue().getTransitionValue());
             }
-            makeTransition(i);
         }
     }
 

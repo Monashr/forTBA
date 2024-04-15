@@ -12,6 +12,11 @@ public class Node {
         this.state = state;
     }
 
+    public Node(Node copy) {
+        this.state = copy.state;
+        this.name = copy.name;
+    }
+
     public void addTransition(Transition value) {
         this.transition.putIfAbsent(this.transition.size(), value);
     }

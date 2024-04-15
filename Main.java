@@ -73,6 +73,8 @@ public class Main {
                 if(reader.isDFAconvert()) {
                     System.out.println("Converting...");
                     listOfBasket.get(k).toNFA();
+                    listOfBasket.get(k).toDFA();
+                    listOfBasket.get(k).print();
                 }
 
                 if(reader.hasCheck()) {

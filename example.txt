@@ -1,14 +1,15 @@
 state
 A Starting
 B NonAccepting
-C NonAccepting
-D Accepting
+C Accepting
 links
+A A 0
 A B 0
+A C 1
+B A 0
 B B 1
-B C e
-C C 0
-C D 1
+C A 1
+C B 1
 DFAconvert
 check
-011
+0101
