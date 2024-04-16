@@ -8,4 +8,4 @@
 
 To-Do
 Harun : Nomor 3 Regex
-Nassser : Nomor 4
+Nassser : Nomor 3 dan 2
