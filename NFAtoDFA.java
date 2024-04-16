@@ -138,27 +138,3 @@ public class NFAtoDFA extends nodeBasket {
         return newNode;
     }
 }
-
-class linkList {
-    private String from;
-    private String to;
-    private char value;
-
-    public linkList(String first, String second, char third) {
-        this.from = first;
-        this.to = second;
-        this.value = third;
-    }
-
-    public String getFrom() {
-        return this.from;
-    }
-
-    public String getTo() {
-        return this.to;
-    }
-
-    public char getValue() {
-        return this.value;
-    }
-}

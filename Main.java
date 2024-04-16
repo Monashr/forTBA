@@ -53,37 +53,39 @@ public class Main {
         } else if(reader.getStateCounts() != -1) {
             System.out.println(reader.getStateCounts() + " Finite Automata Detected");
             
-            for(int i = 0 ; i < reader.getStateCounts() ; i++) {
-                listOfBasket.add(new nodeBasket());
-            }
-            
             for(int k = 0 ; k < reader.getStateCounts() ; k++) {
+                listOfBasket.add(new nodeBasket());
                 for(Map.Entry<String, String> entry : reader.getEntrySet(k)) {
                     listOfBasket.get(k).nodeInsert(entry.getKey(), statePicker(entry.getValue()));
                 }
 
-                for(int j = 0; j < reader.getStateCounts() ; j++) {
-                    for(int i = 0 ; i < reader.getLinksSize(j) ; i++) {
-                        List<String> linkList = reader.getLinks(k);
-                        String input[] = linkList.get(i).split(" ", 3);
-                        listOfBasket.get(k).linkNode(input[0], input[1], input[2].charAt(0));
-                    }
-                }
-    
-                if(reader.isDFAconvert()) {
-                    System.out.println("Converting...");
-                    listOfBasket.get(k).toNFA();
-                    listOfBasket.get(k).toDFA();
-                    listOfBasket.get(k).print();
-                }
+                for(int i = 0 ; i < reader.getLinksSize(k) ; i++) {
+                    List<String> linkList = reader.getLinks(k);
+                    String input[] = linkList.get(i).split(" ", 3);
+                    listOfBasket.get(k).linkNode(input[0], input[1], input[2].charAt(0));
+                }   
+            }
 
-                if(reader.hasCheck()) {
-                    System.out.println("Checking Input " + reader.getCheck());
-                    listOfBasket.get(k).transverse(reader.getCheck());
-                    return;
-                } 
-                
+            if(reader.isDFAconvert()) {
+                System.out.println("Converting...");
+                listOfBasket.get(0).toNFA();
+                listOfBasket.get(0).toDFA();
+                listOfBasket.get(0).print();
+            }
 
+            if(reader.hasCheck()) {
+                System.out.println("Checking Input " + reader.getCheck());
+                listOfBasket.get(0).transverse(reader.getCheck());
+                return;
+            } 
+
+            if(reader.isCompare()) {
+                DFAcomparator comparator = new DFAcomparator(listOfBasket);
+                if(comparator.engine()) {
+                    System.out.println("DFA 1 and DFA 2 are Equivalent");
+                } else {
+                    System.out.println("DFA 1 and DFA 2 are not Equivalent");
+                }
             }
         }
     }
