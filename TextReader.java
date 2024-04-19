@@ -14,6 +14,7 @@ public class TextReader {
     private String check;
     private boolean DFAconvert;
     private boolean compare;
+    private boolean minimize;
     private List<List<String>> links;
     private List<Map<String, String>> stateMap;
 
@@ -23,6 +24,7 @@ public class TextReader {
         this.check = "null";
         this.DFAconvert = false;
         this.compare = false;
+        this.minimize = false;
         this.links = new ArrayList<>();
         this.stateMap = new ArrayList<>();
     }
@@ -38,8 +40,9 @@ public class TextReader {
                     line.equalsIgnoreCase("state") || 
                     line.equalsIgnoreCase("links") || 
                     line.equalsIgnoreCase("check") ||
-                    line.equalsIgnoreCase("dfaconvert") ||
-                    line.equalsIgnoreCase("compare")) {
+                    line.equalsIgnoreCase("compare")||
+                    line.equalsIgnoreCase("dfaconvert") || 
+                    line.equalsIgnoreCase("minimize")){
 
                     mode = line;
                     if(mode.equalsIgnoreCase("state")) {
@@ -49,6 +52,8 @@ public class TextReader {
                         this.DFAconvert = true;
                     } else if(mode.equalsIgnoreCase("compare")) {
                         this.compare = true;
+                    } else if(mode.equalsIgnoreCase("minimize")) {
+                        this.minimize = true;
                     }
                     continue;
                 }
@@ -123,6 +128,10 @@ public class TextReader {
 
     public boolean isCompare() {
         return this.compare;
+    }
+
+    public boolean minimize() {
+        return this.minimize;
     }
 
 }

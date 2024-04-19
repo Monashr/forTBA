@@ -11,6 +11,14 @@ public class nodeBasket {
         this.traveler = nodeMaker("traveler", State.AS);
     }
 
+    public ArrayList<Node> getBasket() {
+        return this.basket;
+    }
+
+    public int size() {
+        return this.basket.size();
+    }
+
     public static Node nodeMaker(String name, State state) {
         return new Node(state, name);
     }

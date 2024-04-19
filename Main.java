@@ -5,22 +5,13 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static void regexChecker(TextReader reader, RegularEx ex, String check) {
-        if(check.length() == 0) {
-            System.out.print("Checking " + reader.getCheck());
-            if(ex.compare(reader.getCheck())) {
-                System.out.println(" : True");
-            } else {
-                System.out.println(" : False");
-            };
+    private static void regexChecker(String input, RegularEx ex) {
+        System.out.print("Checking " + input);
+        if(ex.compare(input)) {
+            System.out.println(" : True");
         } else {
-            System.out.print("Checking " + check);
-            if(ex.compare(check)) {
-                System.out.println(" : True");
-            } else {
-                System.out.println(" : False");
-            }; 
-        }
+            System.out.println(" : False");
+        };
     }
 
     public static State statePicker(String input) {
@@ -46,7 +37,7 @@ public class Main {
             RegularEx ex = new RegularEx(reader.getRegex());
 
             if(reader.hasCheck()) {
-                regexChecker(reader, ex, "");
+                regexChecker(reader.getCheck(), ex);
                 return;
             }
 
@@ -86,6 +77,11 @@ public class Main {
                 } else {
                     System.out.println("DFA 1 and DFA 2 are not Equivalent");
                 }
+            }
+
+            if(reader.minimize()) {
+                DFAminimizer minimizer = new DFAminimizer(listOfBasket.get(0).getBasket());
+                minimizer.engine();
             }
         }
     }
