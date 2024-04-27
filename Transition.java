@@ -20,6 +20,4 @@ public class Transition {
     public String getTargetName() {
         return this.target.name;
     }
-
-
 }

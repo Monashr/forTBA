@@ -13,17 +13,17 @@ public class RegularEx {
     }
 
     public String insert(String input) {
-        for(int i = 0 ; i < input.length(); i++) {
-
-            if(input.charAt(i) ==  'e') {
-                input = new StringBuilder(input).insert(i+1, '?').toString();
+        for (int i = 0; i < input.length(); i++) {
+            if (input.charAt(i) == 'e') {
+                input = new StringBuilder(input).insert(i + 1, '?').toString();
                 i++;
             }
-            
-            if(input.charAt(i) ==  '+') {
+
+            if (input.charAt(i) == '+') {
                 input = input.replace('+', '|');
             }
         }
+
         return input;
     }
 

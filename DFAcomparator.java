@@ -19,8 +19,8 @@ public class DFAcomparator extends nodeBasket {
     }
 
     private boolean checker(twoState state) {
-        for(twoState iterator : this.twoStatesList) {
-            if(state.getNode(0) == iterator.getNode(0) && state.getNode(1) == iterator.getNode(1)) {
+        for (twoState iterator : this.twoStatesList) {
+            if (state.getNode(0) == iterator.getNode(0) && state.getNode(1) == iterator.getNode(1)) {
                 return true;
             }
         }
@@ -30,19 +30,24 @@ public class DFAcomparator extends nodeBasket {
 
     private twoState getStarting() {
         twoState temp = new twoState(null, null);
-        for(int i = 0 ; i < 2 ; i++) {
+
+        for (int i = 0; i < 2; i++) {
             temp.setNode(listOfBasket.get(i).searchNode(), i);
         }
+
         return temp;
     }
 
     public boolean engine() {
         twoState startingState = getStarting();
-        if(startingState.stateCompare()) {
+
+        if (startingState.stateCompare()) {
             insertTwoStateList(startingState);
             maker(startingState);
-            return this.compareResult; 
-        } else {
+            return this.compareResult;
+        }
+
+        else {
             return false;
         }
     }
@@ -50,21 +55,21 @@ public class DFAcomparator extends nodeBasket {
     private void maker(twoState state) {
         twoState tempState = new twoState(null, null);
 
-        for(int k = 0 ; k < 2 ; k++) {
-            for(int i = 0 ; i < 2 ; i++) {
-                for(Entry<Integer, Transition> entry : state.getNode(i).transition.entrySet()) {
-                    if(entry.getValue().getTransitionValue() == super.numToChar(k)) {
+        for (int k = 0; k < 2; k++) {
+            for (int i = 0; i < 2; i++) {
+                for (Entry<Integer, Transition> entry : state.getNode(i).transition.entrySet()) {
+                    if (entry.getValue().getTransitionValue() == super.numToChar(k)) {
                         tempState.setNode(entry.getValue().getTarget(), i);
                     }
                 }
             }
 
-            if(!tempState.stateCompare()) {
+            if (!tempState.stateCompare()) {
                 this.compareResult = false;
                 break;
             }
 
-            if(!checker(tempState)) {
+            if (!checker(tempState)) {
                 insertTwoStateList(tempState);
                 maker(tempState);
             }
@@ -91,23 +96,27 @@ class twoState {
     }
 
     public Node getNode(int num) {
-        if(num == 0) {
+        if (num == 0) {
             return this.one;
-        } else {
+        }
+
+        else {
             return this.two;
         }
     }
 
     public void setNode(Node node, int order) {
-        if(order == 0) {
+        if (order == 0) {
             this.one = node;
-        } else {
+        }
+
+        else {
             this.two = node;
         }
     }
 
     public boolean stateCompare() {
-        if(getStateOne().equals(getStateTwo())) {
+        if (getStateOne().equals(getStateTwo())) {
             return true;
         }
 

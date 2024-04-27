@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class DFAminimizer extends nodeBasket{
+public class DFAminimizer extends nodeBasket {
 
     ArrayList<Node> basket;
     ArrayList<ArrayList<Node>> container;
@@ -17,10 +17,13 @@ public class DFAminimizer extends nodeBasket{
     private void separator() {
         this.container.add(new ArrayList<Node>());
         this.container.add(new ArrayList<Node>());
-        for(Node iterator : basket) {
-            if(iterator.state.equals(State.A) || iterator.state.equals(State.AS)) {
+
+        for (Node iterator : basket) {
+            if (iterator.state.equals(State.A) || iterator.state.equals(State.AS)) {
                 this.container.get(1).add(iterator);
-            } else {
+            }
+
+            else {
                 this.container.get(0).add(iterator);
             }
         }
@@ -32,8 +35,8 @@ public class DFAminimizer extends nodeBasket{
     }
 
     private int checkContainer(Node node) {
-        for(int i = 0 ; i < this.container.size() ; i++) {
-            if(this.container.get(i).contains(node)) {
+        for (int i = 0; i < this.container.size(); i++) {
+            if (this.container.get(i).contains(node)) {
                 return i;
             }
         }
@@ -42,8 +45,8 @@ public class DFAminimizer extends nodeBasket{
     }
 
     private boolean containsKeys(HashMap<int[], ArrayList<Node>> keys, int[] key) {
-        for(int[] iterator : keys.keySet()) {
-            if(checkKey(iterator, key)) {
+        for (int[] iterator : keys.keySet()) {
+            if (checkKey(iterator, key)) {
                 return true;
             }
         }
@@ -62,23 +65,25 @@ public class DFAminimizer extends nodeBasket{
     }
 
     private void patternCheck(Node node) {
-
         int transitionPattern[] = new int[2];
-        for(Entry<Integer, Transition> entry : node.transition.entrySet()) {
-            for(int j = 0 ; j < 2 ; j++) {
-                if(entry.getValue().getTransitionValue() == numToChar(j)) {
+
+        for (Entry<Integer, Transition> entry : node.transition.entrySet()) {
+            for (int j = 0; j < 2; j++) {
+                if (entry.getValue().getTransitionValue() == numToChar(j)) {
                     transitionPattern[j] = checkContainer(entry.getValue().getTarget());
                 }
             }
         }
 
-        if(!containsKeys(this.pattern, transitionPattern)) {
+        if (!containsKeys(this.pattern, transitionPattern)) {
             ArrayList<Node> tempContainer = new ArrayList<Node>();
             tempContainer.add(node);
             this.pattern.put(transitionPattern, tempContainer);
-        } else {
-            for(Entry<int[], ArrayList<Node>> entry : this.pattern.entrySet()) {
-                if(checkKey(entry.getKey(), transitionPattern)) {
+        }
+
+        else {
+            for (Entry<int[], ArrayList<Node>> entry : this.pattern.entrySet()) {
+                if (checkKey(entry.getKey(), transitionPattern)) {
                     entry.getValue().add(node);
                     break;
                 }
@@ -87,18 +92,17 @@ public class DFAminimizer extends nodeBasket{
     }
 
     private void patternInsert(ArrayList<ArrayList<Node>> tempContainer) {
-        for(Entry<int[], ArrayList<Node>> entry : this.pattern.entrySet()) {
+        for (Entry<int[], ArrayList<Node>> entry : this.pattern.entrySet()) {
             tempContainer.add(entry.getValue());
         }
     }
 
     private boolean areArrayListsEqual(ArrayList<ArrayList<Node>> list) {
-        
+
         if (list.size() != this.container.size()) {
             return false;
         }
 
-        
         for (int i = 0; i < list.size(); i++) {
             ArrayList<Node> sublist1 = list.get(i);
             ArrayList<Node> sublist2 = this.container.get(i);
@@ -121,20 +125,21 @@ public class DFAminimizer extends nodeBasket{
         ArrayList<ArrayList<Node>> tempContainer = new ArrayList<ArrayList<Node>>();
         boolean change = true;
 
-        while(change) {
-            for(int i = 0 ; i < container.size() ; i++) {
-                for(int j = 0 ; j < container.get(i).size() ; j++) {
+        while (change) {
+            for (int i = 0; i < container.size(); i++) {
+                for (int j = 0; j < container.get(i).size(); j++) {
                     patternCheck(container.get(i).get(j));
                 }
+
                 patternInsert(tempContainer);
                 this.pattern.clear();
             }
+
             change = !areArrayListsEqual(tempContainer);
             this.container.clear();
             this.container.addAll(tempContainer);
             tempContainer.clear();
-        } 
+        }
     }
-
 
 }

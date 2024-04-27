@@ -1,6 +1,5 @@
 import java.util.HashMap;
 
-
 public class Node {
 
     State state;
@@ -22,7 +21,7 @@ public class Node {
     }
 
     public void ToAccepting() {
-        if(this.state.equals(State.S)) {
+        if (this.state.equals(State.S)) {
             this.state = State.AS;
             return;
         }

@@ -16,7 +16,7 @@ public class Expression {
 
     public void isClosure() {
         this.closure = true;
-    } 
+    }
 
     public boolean isItClosure() {
         return this.closure;

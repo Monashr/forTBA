@@ -16,32 +16,34 @@ public class NFAtoDFA extends nodeBasket {
     }
 
     private Node checker(String name) {
-        for(Node iterator : this.DFAMap) {
-            if(iterator.name.equals(name)) {
+        for (Node iterator : this.DFAMap) {
+            if (iterator.name.equals(name)) {
                 return iterator;
             }
         }
+
         return null;
     }
 
     public ArrayList<Node> engine(Node startingPoint) {
         maker(startingPoint);
-
         return new ArrayList<Node>(this.DFAMap);
     }
 
     private void makeDeadState() {
-        this.DeadState = super.nodeMaker("DeadState", State.N); 
-        for(int i = 0 ; i < 2 ; i++) {
+        this.DeadState = super.nodeMaker("DeadState", State.N);
+
+        for (int i = 0; i < 2; i++) {
             nodeLinker(this.DeadState, this.DeadState, super.numToChar(i));
         }
+
         insertToMap(this.DeadState);
     }
 
     private String nameBuilder(HashSet<Node> nodeList) {
         StringBuilder sb = new StringBuilder();
 
-        for(Node iterator : nodeList) {
+        for (Node iterator : nodeList) {
             sb.append(iterator.name);
         }
 
@@ -49,27 +51,27 @@ public class NFAtoDFA extends nodeBasket {
     }
 
     private State stateChecker(HashSet<Node> Nodes) {
-        for(Node iterator : Nodes) {
-            if(iterator.state.equals(State.A) || iterator.state.equals(State.AS)) {
+        for (Node iterator : Nodes) {
+            if (iterator.state.equals(State.A) || iterator.state.equals(State.AS)) {
                 return State.A;
             }
         }
+
         return State.N;
     }
 
     private Node combineMultipleNodes(HashSet<Node> Nodes, String name, char state) {
-
         HashSet<String> transitionList = new HashSet<String>();
-        Node tempNode = super.nodeMaker(name, stateChecker(Nodes));        
-            for(Node iterator : Nodes) {
-                for(Entry<Integer, Transition> entry : iterator.transition.entrySet()) {
-                    String transition = entry.getValue().getTargetName() + entry.getValue().getTransitionValue();
-                    if(transitionList.contains(transition)) {
-                        continue;
-                    }
+        Node tempNode = super.nodeMaker(name, stateChecker(Nodes));
 
-                    transitionList.add(transition);
-                    super.nodeLinker(tempNode, entry.getValue().getTarget(), entry.getValue().getTransitionValue());
+        for (Node iterator : Nodes) {
+            for (Entry<Integer, Transition> entry : iterator.transition.entrySet()) {
+                String transition = entry.getValue().getTargetName() + entry.getValue().getTransitionValue();
+                if (transitionList.contains(transition)) {
+                    continue;
+                }
+                transitionList.add(transition);
+                super.nodeLinker(tempNode, entry.getValue().getTarget(), entry.getValue().getTransitionValue());
             }
         }
 
@@ -77,7 +79,7 @@ public class NFAtoDFA extends nodeBasket {
     }
 
     private Node getNodeFromSet(HashSet<Node> set) {
-        for(Node node : set) {
+        for (Node node : set) {
             return node;
         }
 
@@ -85,7 +87,7 @@ public class NFAtoDFA extends nodeBasket {
     }
 
     private String getNodeNameFromSet(HashSet<Node> set) {
-        for(Node node : set) {
+        for (Node node : set) {
             return node.name;
         }
 
@@ -93,19 +95,21 @@ public class NFAtoDFA extends nodeBasket {
     }
 
     public Node maker(Node node) {
-        HashSet<Node> temp =  new HashSet<Node>();
+        HashSet<Node> temp = new HashSet<Node>();
         Node newNode = new Node(node);
         this.DFAMap.add(newNode);
-        for(int i = 0 ; i < 2 ; i++) {
+
+        for (int i = 0; i < 2; i++) {
             temp.clear();
-            for(Entry<Integer, Transition> entry : node.transition.entrySet()) {
-                if(entry.getValue().getTransitionValue() == super.numToChar(i)) {
+
+            for (Entry<Integer, Transition> entry : node.transition.entrySet()) {
+                if (entry.getValue().getTransitionValue() == super.numToChar(i)) {
                     temp.add(entry.getValue().getTarget());
                 }
             }
 
-            if(temp.size() == 0) {
-                if(this.DeadState == null) {
+            if (temp.size() == 0) {
+                if (this.DeadState == null) {
                     makeDeadState();
                 }
 
@@ -113,19 +117,21 @@ public class NFAtoDFA extends nodeBasket {
                 temp.clear();
                 continue;
             }
-            if(temp.size() == 1) {
+
+            if (temp.size() == 1) {
                 Node existingNode = checker(getNodeNameFromSet(temp));
-                if(existingNode != null) {
+                if (existingNode != null) {
                     super.nodeLinker(newNode, existingNode, numToChar(i));
                     temp.clear();
                     continue;
                 }
                 super.nodeLinker(newNode, maker(getNodeFromSet(temp)), numToChar(i));
-            } 
+            }
+
             else {
                 String name = nameBuilder(temp);
                 Node existingNode = checker(name);
-                if(existingNode != null) {
+                if (existingNode != null) {
                     super.nodeLinker(newNode, existingNode, numToChar(i));
                     temp.clear();
                     continue;
@@ -133,8 +139,9 @@ public class NFAtoDFA extends nodeBasket {
                 Node tempNode = combineMultipleNodes(temp, name, numToChar(i));
                 super.nodeLinker(newNode, maker(tempNode), numToChar(i));
             }
-            
+
         }
+
         return newNode;
     }
 }

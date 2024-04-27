@@ -39,41 +39,47 @@ public class nodeBasket {
     }
 
     private Node searchNode(String name) {
-        for(Node n : basket) {
-            if(n.name.equals(name)) {
+        for (Node n : basket) {
+            if (n.name.equals(name)) {
                 return n;
             }
         }
+
         return null;
     }
 
     protected Node searchNode() {
-        for(Node n : basket) {
-            if(n.state == State.S || n.state == State.AS) {
+        for (Node n : basket) {
+            if (n.state == State.S || n.state == State.AS) {
                 return n;
-            } 
+            }
         }
+
         return null;
     }
 
     public void linkNode(String from, String to, char value) {
         nodeLinker(
-                this.basket.get(this.basket.indexOf(searchNode(from))), 
-                this.basket.get(this.basket.indexOf(searchNode(to))), 
+                this.basket.get(this.basket.indexOf(searchNode(from))),
+                this.basket.get(this.basket.indexOf(searchNode(to))),
                 value);
+
         return;
     }
 
     public void transverse(String input) {
         this.traveler = searchNode();
         walk(input, this.traveler.name);
+
         return;
     }
 
     private boolean check(Node node) {
-        if(node.state == State.A) {
+        if (node.state == State.A) {
             return true;
-        } else if (node.state == State.AS) {
+        }
+
+        else if (node.state == State.AS) {
             return true;
         }
 
@@ -81,25 +87,23 @@ public class nodeBasket {
     }
 
     private void walk(String input, String output) {
-
         boolean hasil;
 
-        if(input.length() == 0) {
+        if (input.length() == 0) {
             hasil = check(traveler);
             System.out.println(output + " " + hasil);
-                
-            
+        }
 
-        } else {
-
+        else {
             ArrayList<Node> jalanPossible = new ArrayList<Node>();
-
-            for(Entry<Integer, Transition> entry : this.traveler.transition.entrySet()) {
-                if(input.charAt(0) == entry.getValue().getTransitionValue()) {
+            for (Entry<Integer, Transition> entry : this.traveler.transition.entrySet()) {
+                if (input.charAt(0) == entry.getValue().getTransitionValue()) {
                     jalanPossible.add(entry.getValue().getTarget());
                     this.traveler = entry.getValue().getTarget();
                     walk(input.substring(1), output + " " + entry.getValue().getTargetName());
-                } else if ('e' == entry.getValue().getTransitionValue()) {
+                }
+
+                else if ('e' == entry.getValue().getTransitionValue()) {
                     jalanPossible.add(entry.getValue().getTarget());
                     this.traveler = entry.getValue().getTarget();
                     walk(input, output + " " + entry.getValue().getTargetName());
@@ -111,9 +115,10 @@ public class nodeBasket {
     }
 
     protected char numToChar(int num) {
-        if(num > 0) {
+        if (num > 0) {
             return '1';
         }
+
         return '0';
     }
 
@@ -128,29 +133,34 @@ public class nodeBasket {
     }
 
     private String statePrinter(Node node) {
-        if(node.state == State.A) {
+        if (node.state == State.A) {
             return "Accepting";
-        } else if(node.state == State.AS) {
-            return "StartingAccepting";
-        } else if(node.state == State.S) {
-            return "Starting";
-        } else {
-            return "NonAccepting";
         }
+
+        if (node.state == State.AS) {
+            return "StartingAccepting";
+        }
+
+        if (node.state == State.S) {
+            return "Starting";
+        }
+
+        return "NonAccepting";
     }
 
     public void print() {
         System.out.println("state");
-        for(Node node : this.basket) {
+        for (Node node : this.basket) {
             System.out.println(node.name + " " + statePrinter(node));
         }
+
         System.out.println("links");
-        for(Node node : this.basket) {
-            for(Entry<Integer, Transition> entry : node.transition.entrySet()) {
-                System.out.println(node.name + " " + entry.getValue().getTargetName() + " " + entry.getValue().getTransitionValue());
+        for (Node node : this.basket) {
+            for (Entry<Integer, Transition> entry : node.transition.entrySet()) {
+                System.out.println(node.name + " " + entry.getValue().getTargetName() + " "
+                        + entry.getValue().getTransitionValue());
             }
         }
     }
-
 
 }

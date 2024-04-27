@@ -33,55 +33,54 @@ public class TextReader {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             String mode = null;
+
             while ((line = br.readLine()) != null) {
-
-                if(
-                    line.equalsIgnoreCase("regex") || 
-                    line.equalsIgnoreCase("state") || 
-                    line.equalsIgnoreCase("links") || 
-                    line.equalsIgnoreCase("check") ||
-                    line.equalsIgnoreCase("compare")||
-                    line.equalsIgnoreCase("dfaconvert") || 
-                    line.equalsIgnoreCase("minimize")){
-
+                if (line.equalsIgnoreCase("regex") ||
+                        line.equalsIgnoreCase("state") ||
+                        line.equalsIgnoreCase("links") ||
+                        line.equalsIgnoreCase("check") ||
+                        line.equalsIgnoreCase("compare") ||
+                        line.equalsIgnoreCase("dfaconvert") ||
+                        line.equalsIgnoreCase("minimize")) {
                     mode = line;
-                    if(mode.equalsIgnoreCase("state")) {
+                    if (mode.equalsIgnoreCase("state")) {
                         this.stateMap.add(new HashMap<>());
                         this.links.add(new ArrayList<>());
-                    } else if(mode.equalsIgnoreCase("dfaconvert")) {
+                    } else if (mode.equalsIgnoreCase("dfaconvert")) {
                         this.DFAconvert = true;
-                    } else if(mode.equalsIgnoreCase("compare")) {
+                    } else if (mode.equalsIgnoreCase("compare")) {
                         this.compare = true;
-                    } else if(mode.equalsIgnoreCase("minimize")) {
+                    } else if (mode.equalsIgnoreCase("minimize")) {
                         this.minimize = true;
                     }
                     continue;
                 }
 
-                if(mode.equalsIgnoreCase("regex")) {
+                if (mode.equalsIgnoreCase("regex")) {
                     this.Regex = line;
                     continue;
                 }
 
-                if (mode.equalsIgnoreCase("state")) { 
+                if (mode.equalsIgnoreCase("state")) {
                     String[] parts = line.split(" ");
                     if (parts.length >= 2) {
                         this.stateMap.get(getStateCounts() - 1).put(parts[0], parts[1].toLowerCase());
                     }
                     continue;
-                } 
+                }
 
-                if(mode.equalsIgnoreCase("links")) {
+                if (mode.equalsIgnoreCase("links")) {
                     this.links.get(getStateCounts() - 1).add(line);
                     continue;
                 }
 
-                if(mode.equalsIgnoreCase("check")) {
+                if (mode.equalsIgnoreCase("check")) {
                     this.check = line;
                 }
-
             }
-        } catch (IOException e) {
+        }
+
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -107,7 +106,7 @@ public class TextReader {
     }
 
     public boolean hasCheck() {
-        if(this.check.equals("null")) {
+        if (this.check.equals("null")) {
             return false;
         }
 
