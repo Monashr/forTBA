@@ -6,6 +6,4 @@
 4.  menerima input berupa dua buah DFA, kemudian menunjukkan keduanya equivalen atau tidak
 5.  Mengetes DFA, NFA, e-NFA ataupun reguler expression dengan memasukkan input berupa string untuk mengetahui apakah string tersebut di accept atau di reject
 
-To-Do
-Harun : Nomor 3 Regex
-Nassser : Nomor 3 dan 2
+1.0 non-stable version
