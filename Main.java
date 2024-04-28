@@ -93,7 +93,8 @@ public class Main {
 
             if (reader.minimize()) {
                 DFAminimizer minimizer = new DFAminimizer(listOfBasket.get(0).getBasket());
-                minimizer.engine();
+                listOfBasket.get(0).basket = minimizer.engine();
+                listOfBasket.get(0).print();
             }
         }
     }

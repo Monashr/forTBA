@@ -20,4 +20,8 @@ public class Transition {
     public String getTargetName() {
         return this.target.name;
     }
+
+    public void changeTarget(Node node) {
+        this.target = node;
+    }
 }
