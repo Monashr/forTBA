@@ -68,19 +68,17 @@ public class Main {
 
             if (reader.isDFAconvert()) {
                 System.out.println("Converting...");
+                listOfBasket.get(0).printDot("Before", null);
                 listOfBasket.get(0).toNFA();
+                listOfBasket.get(0).printDot("NFA", null);
                 listOfBasket.get(0).toDFA();
-                listOfBasket.get(0).print();
-            }
-
-            if (reader.hasCheck()) {
-                System.out.println("Checking Input " + reader.getCheck());
-                listOfBasket.get(0).transverse(reader.getCheck());
-                return;
+                listOfBasket.get(0).printDot("DFA", null);
             }
 
             if (reader.isCompare()) {
                 DFAcomparator comparator = new DFAcomparator(listOfBasket);
+                listOfBasket.get(0).printDot("1", null);
+                listOfBasket.get(1).printDot("2", null);
 
                 if (comparator.engine()) {
                     System.out.println("DFA 1 and DFA 2 are Equivalent");
@@ -95,6 +93,14 @@ public class Main {
                 DFAminimizer minimizer = new DFAminimizer(listOfBasket.get(0).getBasket());
                 listOfBasket.get(0).basket = minimizer.engine();
                 listOfBasket.get(0).print();
+                listOfBasket.get(0).printDot("Minimized", null);
+            }
+
+            if (reader.hasCheck()) {
+                System.out.println("Checking Input " + reader.getCheck());
+                listOfBasket.get(0).transverse(reader.getCheck());
+                listOfBasket.get(0).printDot("String Check Result", reader.getCheck());
+                return;
             }
         }
     }

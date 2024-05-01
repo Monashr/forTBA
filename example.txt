@@ -1,18 +1,26 @@
 state
-A Starting
-B NonAccepting
-C NonAccepting
-D NonAccepting
-E Accepting
+q1 StartingAccepting
+q2 NonAccepting
+q3 Accepting
 links
-A B 0
-A C 1
-B B 0
-B D 1
-C B 0
-C C 1
-D B 0
-D E 1
-E B 0
-E C 1
-minimize
+q1 q1 0
+q1 q2 1
+q2 q1 1
+q2 q3 0
+q3 q3 1
+q3 q2 0
+state
+q4 StartingAccepting
+q5 NonAccepting
+q6 NonAccepting
+q7 NonAccepting
+links
+q4 q4 0
+q4 q5 1
+q5 q6 1
+q5 q7 0
+q6 q6 1
+q6 q7 0
+q7 q4 0
+q7 q5 1
+compare

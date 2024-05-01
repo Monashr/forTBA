@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
@@ -5,6 +9,7 @@ public class nodeBasket {
 
     protected ArrayList<Node> basket;
     Node traveler;
+    boolean hasil;
 
     public nodeBasket() {
         this.basket = new ArrayList<Node>();
@@ -87,10 +92,11 @@ public class nodeBasket {
     }
 
     private void walk(String input, String output) {
-        boolean hasil;
 
         if (input.length() == 0) {
-            hasil = check(traveler);
+            if (check(traveler)) {
+                this.hasil = true;
+            }
             System.out.println(output + " " + hasil);
         }
 
@@ -161,6 +167,83 @@ public class nodeBasket {
                         + entry.getValue().getTransitionValue());
             }
         }
+    }
+
+    private void dotStateBuilder(StringBuilder sb, Node node) {
+        if (statePrinter(node).equals("Accepting")) {
+            sb.append(node.name).append(" [style=filled, color=lawngreen];\n");
+        }
+
+        else if (statePrinter(node).equals("StartingAccepting")) {
+            sb.append("klk [style=invis]; \n").append(node.name).append(" [style=filled, color=lawngreen];\n")
+                    .append("klk->").append(node.name).append(";\n");
+        }
+
+        else if (statePrinter(node).equals("Starting")) {
+            sb.append("klk [style=invis]; \n").append(node.name).append(";\n").append("klk->").append(node.name)
+                    .append(";\n");
+        }
+
+        else {
+            sb.append(node.name).append(";\n");
+        }
+    }
+
+    public void printDot(String filename, String input) {
+
+        StringBuilder sb = new StringBuilder();
+        String dotFile = "output.dot";
+
+        sb.append("digraph G {\n");
+
+        for (Node node : this.basket) {
+            dotStateBuilder(sb, node);
+        }
+
+        for (Node node : this.basket) {
+            for (Entry<Integer, Transition> entry : node.transition.entrySet()) {
+                sb.append(node.name).append("->").append(entry.getValue().getTargetName()).append(" [label=\"")
+                        .append(entry.getValue().getTransitionValue()).append("\"];\n");
+            }
+        }
+
+        if (input != null) {
+            if (this.hasil) {
+                sb.append("String").append("->").append(input).append("->").append("true");
+            }
+
+            else {
+                sb.append("String").append("->").append(input).append("->").append("false");
+            }
+
+        }
+        sb.append("}");
+
+        String result = sb.toString();
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dotFile))) {
+            writer.write(result);
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+
+        String pngFileName = filename + ".png";
+
+        try {
+            ProcessBuilder pb = new ProcessBuilder("dot", "-Tpng", dotFile, "-o", pngFileName);
+            Process process = pb.start();
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                System.out.println("PNG file generated successfully: " + pngFileName);
+            } else {
+                System.err.println("Error generating PNG file. Exit code: " + exitCode);
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Error executing dot command: " + e.getMessage());
+        }
+
+        File file = new File("output.dot");
+        file.delete();
     }
 
 }

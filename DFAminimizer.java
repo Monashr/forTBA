@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
 
 public class DFAminimizer extends nodeBasket {
@@ -22,7 +23,7 @@ public class DFAminimizer extends nodeBasket {
         this.container.add(new ArrayList<Node>());
         this.container.add(new ArrayList<Node>());
 
-        for (Node iterator : basket) {
+        for (Node iterator : this.basket) {
             if (iterator.state.equals(State.A) || iterator.state.equals(State.AS)) {
                 this.container.get(1).add(iterator);
             }
@@ -33,7 +34,36 @@ public class DFAminimizer extends nodeBasket {
         }
     }
 
+    private void removerRecursive(HashSet<Node> list, Node node) {
+        for (Entry<Integer, Transition> entry : node.transition.entrySet()) {
+            if (entry.getValue().getTransitionValue() == '0' || entry.getValue().getTransitionValue() == '1') {
+                if (!list.contains(entry.getValue().getTarget())) {
+                    list.add(entry.getValue().getTarget());
+                    removerRecursive(list, entry.getValue().getTarget());
+                }
+            }
+        }
+    }
+
+    private void remover() {
+        HashSet<Node> list = new HashSet<Node>();
+        Node startingNode = null;
+
+        for (Node iterator : this.basket) {
+            if (iterator.state.equals(State.S) || iterator.state.equals(State.AS)) {
+                list.add(iterator);
+                startingNode = iterator;
+                break;
+            }
+        }
+
+        removerRecursive(list, startingNode);
+        ArrayList<Node> tempList = new ArrayList<>(list);
+        this.basket = tempList;
+    }
+
     public ArrayList<Node> engine() {
+        remover();
         separator();
         maker();
         return this.Basket;
@@ -140,16 +170,34 @@ public class DFAminimizer extends nodeBasket {
         }
     }
 
-    private void mergeNode(ArrayList<Node> nodes) {
+    private void mergeNode(ArrayList<Node> nodes, ArrayList<ArrayList<Node>> temp) {
         Node tempNode = new Node(nodes.get(0));
         tempNode.transition = nodes.get(0).transition;
         String name = new String();
         for (int i = 0; i < nodes.size(); i++) {
             name = name + nodes.get(i).name;
+            if (nodes.get(i).state == State.S) {
+                if (tempNode.state == State.A) {
+                    tempNode.state = State.AS;
+                }
+
+                tempNode.state = State.S;
+            }
+
+            if (nodes.get(i).state == State.A) {
+                if (tempNode.state == State.S) {
+                    tempNode.state = State.AS;
+                }
+
+                tempNode.state = State.A;
+            }
+
         }
 
         tempNode.name = name;
-        this.Basket.add(tempNode);
+        ArrayList<Node> tempmerged = new ArrayList<Node>();
+        tempmerged.add(tempNode);
+        temp.add(tempmerged);
 
         for (int i = 0; i < nodes.size(); i++) {
             this.mergedNodes.put(nodes.get(i).name, tempNode);
@@ -158,17 +206,20 @@ public class DFAminimizer extends nodeBasket {
     }
 
     private void combineNode() {
+        ArrayList<ArrayList<Node>> temp = new ArrayList<ArrayList<Node>>();
         for (ArrayList<Node> iterator : this.container) {
-            if (iterator.size() > 1) {
-                mergeNode(iterator);
+            if (iterator.size() == 1) {
+                temp.add(iterator);
             }
         }
 
         for (ArrayList<Node> iterator : this.container) {
             if (iterator.size() > 1) {
-                container.remove(iterator);
+                mergeNode(iterator, temp);
             }
         }
+
+        this.container = temp;
 
         for (ArrayList<Node> iterator : this.container) {
             linkNode(iterator.get(0));
